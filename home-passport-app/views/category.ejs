@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head><%- include('partials/head', { title: category.label + ' — Home Passport' }) %></head>
+<body>
+<div class="app-shell">
+
+  <div style="flex-shrink:0;background:#16141A;padding:28px 20px 22px 20px;">
+    <a href="/" aria-label="Back to property overview" style="display:inline-flex;align-items:center;gap:6px;color:#F6F1E4;opacity:0.85;font-size:13px;font-weight:600;margin-bottom:16px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F6F1E4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <%= property.address %>
+    </a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="icon-circle" style="width:44px;height:44px;background:#FF6A00;">
+        <%- include('partials/icon', { name: category.icon, color: '#16141A', size: 20 }) %>
+      </div>
+      <div>
+        <h1 style="font-size:22px;font-weight:600;color:#F6F1E4;"><%= category.label %></h1>
+        <div style="font-size:12px;color:#F6F1E4;opacity:0.7;margin-top:1px;"><%= records.length %> record<%= records.length === 1 ? '' : 's' %></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:18px 20px 0 20px;display:flex;flex-direction:column;gap:10px;">
+
+    <% if (records.length === 0) { %>
+      <div class="card" style="padding:28px 16px;text-align:center;color:#6b6558;font-size:13px;">
+        No records here yet. Tap the + button to add the first one.
+      </div>
+    <% } %>
+
+    <% records.forEach(function(r) { %>
+      <div class="card" style="display:flex;gap:12px;padding:14px;<%= r.voiceNotePath && !r.photoPath ? 'align-items:center;' : '' %>">
+        <% if (r.voiceNotePath && !r.photoPath) { %>
+          <div style="width:52px;height:52px;border-radius:100px;background:#FFE7D6;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF6A00"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          </div>
+        <% } else if (r.photoPath && !r.photoIsPdf) { %>
+          <img src="<%= r.photoPath %>" alt="" style="width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;">
+        <% } else { %>
+          <div style="width:52px;height:52px;border-radius:10px;background:#e9e2cd;flex-shrink:0;"></div>
+        <% } %>
+
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;"><%= r.title %></div>
+          <div style="font-size:12px;color:#6b6558;margin-top:2px;">
+            <%= r.voiceNotePath && !r.photoPath ? 'Voice note · ' : '' %><%= new Date(r.createdAt).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+          </div>
+          <% if (r.notes) { %>
+            <div style="font-size:12px;color:#6b6558;margin-top:4px;"><%= r.notes %></div>
+          <% } %>
+          <% if (r.photoPath || r.voiceNotePath) { %>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+              <% if (r.photoPath && !r.photoIsPdf) { %><span class="badge photo">Photo</span><% } %>
+              <% if (r.photoPath && r.photoIsPdf) { %><span class="badge">Document</span><% } %>
+              <% if (r.voiceNotePath) { %><span class="badge">Voice note</span><% } %>
+            </div>
+          <% } %>
+          <% if (r.voiceNotePath) { %>
+            <audio controls src="<%= r.voiceNotePath %>" style="width:100%;height:32px;margin-top:8px;"></audio>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+
+  </div>
+
+  <a href="/add?category=<%= category.slug %>" aria-label="Add a <%= category.label %> record" style="position:absolute;bottom:24px;right:20px;width:54px;height:54px;border-radius:100px;background:#FF6A00;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(255,106,0,0.35);">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F6F1E4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </a>
+
+</div>
+</body>
+</html>
